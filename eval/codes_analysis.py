@@ -120,7 +120,7 @@ def read_embedding_cui(filename):
         embedding_type_to_indices = {}
         embedding_type_to_indices['IDX'] = []
         embedding_type_to_indices['O'] = []
-        for idx in xrange(embedding_num-1):
+        for idx in range(embedding_num-1):
             datum = data[idx+1].strip().split(' ')
             cui = datum[0]
             if cui[0] != 'C':
@@ -148,7 +148,7 @@ def read_embedding_codes(filename):
         embedding_type_to_indices = {}
         name_to_idx = {}
         idx_to_name = {}
-        for idx in xrange(embedding_num-1):
+        for idx in range(embedding_num-1):
             datum = data[idx+1].strip().split(' ')
             embedding_name = datum[0]
             embedding_type, embedding_value = embedding_name.split('_')
@@ -274,7 +274,7 @@ def get_css_analysis(filenames_type, num_of_neighbor, type='f'):
             #print '-------------------------------------------'
             dcg = 0
             best_dcg = np.sum(np.reciprocal(np.log2(range(2, num_of_possible_hits+2))))
-            for i in xrange(num_of_neighbor):
+            for i in range(num_of_neighbor):
                 if idx_to_icd9[target[i]] in icd9_pairs[icd9]:
                     dcg += np.reciprocal(np.log2(i+2))
                     #print 'hit: ',

@@ -67,7 +67,7 @@ embedding_matrix = np.zeros(shape=(len(lines)-2,len(lines[2].split(" "))-2))
 print(embedding_matrix.shape )
 idx_to_code_map = {}
 code_to_idx_map = {}
-for i in xrange(2,len(lines)):
+for i in range(2,len(lines)):
     line = lines[i]
     idx = i - 2
     key = line.split(" ")[0]
@@ -125,7 +125,7 @@ if __name__ == "__main__":
                 print("-------------------------------------------------------")
                 pool = Pool(threads)
                 idx = code_to_idx_map[code]
-                distances = pool.map(compute_cosine_distance,[[i,idx] for i in xrange(0,len(lines)-2)])
+                distances = pool.map(compute_cosine_distance,[[i,idx] for i in range(0,len(lines)-2)])
                 idx_to_close_points = [i[0] for i in sorted(enumerate(distances), key=lambda x:x[1])][-50:]
                 idx_to_close_points.reverse()
                 for top_idx in idx_to_close_points:
@@ -140,7 +140,7 @@ if __name__ == "__main__":
                 print("-------------------------------------------------------")
                 pool = Pool(threads)
                 vector = embedding_matrix[code_to_idx_map[code1],:] + embedding_matrix[code_to_idx_map[code2],:]
-                distances = pool.map(compute_cosine_distance_with_vector,[[i,vector] for i in xrange(0,len(lines)-2)])
+                distances = pool.map(compute_cosine_distance_with_vector,[[i,vector] for i in range(0,len(lines)-2)])
                 idx_to_close_points = [i[0] for i in sorted(enumerate(distances), key=lambda x:x[1])][-50:]
                 idx_to_close_points.reverse()
                 for top_idx in idx_to_close_points:
@@ -158,7 +158,7 @@ if __name__ == "__main__":
                 pool = Pool(threads)
                 vector = embedding_matrix[code_to_idx_map[code2],:] - embedding_matrix[code_to_idx_map[code1],:]
                 vector = vector + embedding_matrix[code_to_idx_map[code3],:]
-                distances = pool.map(compute_cosine_distance_with_vector,[[i,vector] for i in xrange(0,len(lines)-2)])
+                distances = pool.map(compute_cosine_distance_with_vector,[[i,vector] for i in range(0,len(lines)-2)])
                 idx_to_close_points = [i[0] for i in sorted(enumerate(distances), key=lambda x:x[1])][-50:]
                 idx_to_close_points.reverse()
                 print(idx_to_close_points)

@@ -57,13 +57,13 @@ def read_embedding_matrix(filename):
         data = infile.readlines() 
         idx_to_cui = {}
         cui_to_idx = {}
-        for idx in xrange(embedding_num-1):
+        for idx in range(embedding_num-1):
             datum = data[idx+1].strip().split(' ')
             cui = datum[0]
             if cui[0] != 'C':
                 if cui in concept_to_cui:
                     cui = concept_to_cui[cui]
-            embedding_matrix[idx,:] = np.array(map(float, datum[1:]))
+            embedding_matrix[idx,:] = np.array(list(map(float, datum[1:])))
             idx_to_cui[idx] = cui
             cui_to_idx[cui] = idx
         return embedding_matrix, idx_to_cui, cui_to_idx
@@ -177,7 +177,7 @@ def get_nn_analysis(cui_to_idx, embedding_matrix, num_of_neighbor, f):
         for type in idx_to_type[idx]:
             dcg = 0
             err = 0 
-            for i in xrange(num_of_neighbor):
+            for i in range(num_of_neighbor):
                 if target[i] in type_to_idx[type]:
                     dcg += np.reciprocal(np.log2(i+2))
                     if err == 0:
@@ -195,7 +195,7 @@ def get_nn_analysis(cui_to_idx, embedding_matrix, num_of_neighbor, f):
 
 
 def get_all_target_neighbors(query_to_targets, embedding_matrix, num_of_neighbor):
-    vectors = embedding_matrix[np.array(query_to_targets.keys()), :]
+    vectors = embedding_matrix[np.array(list(query_to_targets.keys())), :]
     Y = cdist(vectors, embedding_matrix, 'cosine')
     ranks = np.argsort(Y)
     query_target_rank = {}
@@ -210,7 +210,7 @@ def get_all_target_neighbors(query_to_targets, embedding_matrix, num_of_neighbor
 
 def get_all_target_analogies(ref_idx, seed_idx, query_to_targets, embedding_matrix, num_of_neighbor):
     ref_vecs = np.tile(embedding_matrix[seed_idx, :] - embedding_matrix[ref_idx], (len(query_to_targets), 1))
-    vectors = ref_vecs + embedding_matrix[np.array(query_to_targets.keys()), :]
+    vectors = ref_vecs + embedding_matrix[np.array(list(query_to_targets.keys())), :]
     Y = cdist(vectors, embedding_matrix, 'cosine')
     ranks = np.argsort(Y)
     query_target_rank = {}
@@ -240,9 +240,9 @@ def get_drug_diseases_to_check(concept_filename, cui_to_idx):
                         disease_set.add(cui_to_idx[disease])
                         disease_cui_set.add(disease)
                 if len(disease_set) > 0:
-                    outfile.write('%s(%s):' %(drug, cui_to_description[drug]))
+                    outfile.write('%s(%s):' %(drug, cui_to_description.get(drug, "")))
                     for cui in disease_cui_set:
-                        outfile.write('%s(%s),' %(cui, cui_to_description[cui]))
+                        outfile.write('%s(%s),' %(cui, cui_to_description.get(cui, "")))
                     outfile.write('\n')
                     query_to_targets[cui_to_idx[drug]] = disease_set
     outfile.close()
@@ -334,7 +334,7 @@ def analyze_semantic_files_child(result_q, pidx, n1, n2, ref_seed_list, query_to
     ref_seed_hit_list = []
     hit_sum = 0
     hit_max = (-1, -1, 0)
-    for idx in xrange(n1, n2):
+    for idx in range(n1, n2):
         counter += 1
         #if (idx-n1) % 10 == 0:
         #    print pidx, idx-n1
@@ -385,7 +385,7 @@ def analyze_semantic_files(filenames, num_of_nn, concept_file, num_of_cores):
         #print N
         chunk_size = np.ceil(N/num_of_cores)
 
-        for i in xrange(num_of_cores):
+        for i in range(num_of_cores):
             n1 = min(int(i*chunk_size), N)
             n2 = min(int((i+1)*chunk_size), N)
             p = Process(target=analyze_semantic_files_child, 
@@ -474,7 +474,7 @@ def analyze_semantic(filename1, filename2, num_of_nn, concept_file):
 def get_fine_grain_drug(idx_to_cui, embedding_matrix, drug_pairs, search_indices, query_to_targets_cui, num_of_neighbor, display=False):
     cui_to_description = get_CUI_to_description()
 
-    query_indices = np.array(drug_pairs.keys())
+    query_indices = np.array(list(drug_pairs.keys()))
     Y = cdist(embedding_matrix[query_indices, :], embedding_matrix[search_indices, :], 'cosine')
     ranks = np.argsort(Y)
     cumulative_ndcgs = []
@@ -493,7 +493,7 @@ def get_fine_grain_drug(idx_to_cui, embedding_matrix, drug_pairs, search_indices
             print('-------------------------------------------')
         dcg = 0
         best_dcg = np.sum(np.reciprocal(np.log2(range(2, num_of_possible_hits+2))))
-        for i in xrange(num_of_neighbor):
+        for i in range(num_of_neighbor):
             if search_indices[target[i]] in drug_pairs[query_idx]:
                 dcg += np.reciprocal(np.log2(i+2))
                 if display:
@@ -541,7 +541,7 @@ def analyze_fine_grain_concept_similarity_files(filenames, concept_filename, num
     search_indices.update(type_to_idx['Antibiotic'])
     search_indices = np.array(list(search_indices))
     '''
-    search_indices = np.array(drug_pairs.keys())
+    search_indices = np.array(list(drug_pairs.keys()))
     for filename in filenames:
         cumulative_ndcgs, mean_ndcgs = get_fine_grain_drug(idx_to_cui, filename_to_embedding_matrices[filename], drug_pairs, search_indices, query_to_targets_cui, num_of_nn)
         print(filename + ' & ' + str(mean_ndcgs) + '  \\\\ ')
