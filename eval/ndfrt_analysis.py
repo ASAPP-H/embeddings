@@ -167,7 +167,7 @@ def get_nn_analysis(cui_to_idx, embedding_matrix, num_of_neighbor, f):
     type_idx_dcg_err = {}
     type_dcg = {}
     type_err = {}
-    print 'done calcualting distance'
+    print('done calcualting distance')
     for type in type_to_idx.keys():
         type_dcg[type] = []
         type_err[type] = []
@@ -186,8 +186,8 @@ def get_nn_analysis(cui_to_idx, embedding_matrix, num_of_neighbor, f):
             type_dcg[type].append(dcg)
             type_err[type].append(err)
     for type in type_to_idx.keys():
-        print '%50s (DCG) %2.5f %2.5f' %(type, np.mean(np.array(type_dcg[type])), np.std(np.array(type_dcg[type])))
-        print '%50s (ERR) %2.5f %2.5f' %(type, np.mean(np.array(type_err[type])), np.std(np.array(type_err[type])))
+        print('%50s (DCG) %2.5f %2.5f' %(type, np.mean(np.array(type_dcg[type])), np.std(np.array(type_dcg[type]))))
+        print('%50s (ERR) %2.5f %2.5f' %(type, np.mean(np.array(type_err[type])), np.std(np.array(type_err[type]))))
         f.write('%50s (DCG) %2.5f %2.5f\n' %(type, np.mean(np.array(type_dcg[type])), np.std(np.array(type_dcg[type]))))
         f.write('%50s (ERR) %2.5f %2.5f\n' %(type, np.mean(np.array(type_err[type])), np.std(np.array(type_err[type]))))
     return type_idx_dcg_err
@@ -246,7 +246,7 @@ def get_drug_diseases_to_check(concept_filename, cui_to_idx):
                     outfile.write('\n')
                     query_to_targets[cui_to_idx[drug]] = disease_set
     outfile.close()
-    print '%d/%d concepts are found in embeddings' %(len(query_to_targets), len(data))
+    print('%d/%d concepts are found in embeddings' %(len(query_to_targets), len(data)))
     return query_to_targets
 
 
@@ -284,35 +284,35 @@ def display_query_target_rank(query_target_rank, idx_to_cui, seed_pair=None):
         query_cui = idx_to_cui[query]
         query_name = cui_to_description[query_cui]
         if not seed_pair:
-            print 'Neighbors for %9s %s' %(query_cui, query_name)
+            print('Neighbors for %9s %s' %(query_cui, query_name))
         else:
             ref_idx, seed_idx = seed_pair
             ref_cui = idx_to_cui[ref_idx]
             ref_name = cui_to_description[ref_cui]
             seed_cui = idx_to_cui[seed_idx]
             seed_name = cui_to_description[seed_cui]
-            print 'Analogy for %s %s : %s %s = %s %s : ?' %(ref_cui, ref_name, seed_cui, seed_name, query_cui, query_name)
-        print '------------------------------------------------------------'
+            print('Analogy for %s %s : %s %s = %s %s : ?' %(ref_cui, ref_name, seed_cui, seed_name, query_cui, query_name))
+        print('------------------------------------------------------------')
         target_rank_pairs, top_neighbors = query_target_rank[query]
         for target_idx, rank in target_rank_pairs:
             target_cui = idx_to_cui[target_idx]
             target_name = cui_to_description[target_cui]
-            print '%5d %9s %s' %(rank, target_cui, target_name),
+            print('%5d %9s %s' %(rank, target_cui, target_name),)
             if target_cui in CUI_to_type_map:
-                print CUI_to_type_map[target_cui]
+                print(CUI_to_type_map[target_cui])
             else:
-                print ""
+                print("")
         for index, target_idx in enumerate(list(top_neighbors)):
             target_cui = idx_to_cui[target_idx]
             if target_cui not in cui_to_description:
                 cui_to_description[target_cui] = target_cui
             target_name = cui_to_description[target_cui]
-            print '%5d %9s %s' %(index, target_cui, target_name),
+            print('%5d %9s %s' %(index, target_cui, target_name),)
             if target_cui in CUI_to_type_map:
-                print CUI_to_type_map[target_cui]
+                print(CUI_to_type_map[target_cui])
             else:
-                print ""
-        print ""
+                print("")
+        print("")
 
 
 def evaluate_result(query_target_rank, num_of_nn):
@@ -354,7 +354,7 @@ def analyze_semantic_files_child(result_q, pidx, n1, n2, ref_seed_list, query_to
 
 def analyze_semantic_files(filenames, num_of_nn, concept_file, num_of_cores):
     filename_to_embedding_matrices, idx_to_cui, cui_to_idx = generate_overlapping_sets(filenames)
-    print len(idx_to_cui)
+    print(len(idx_to_cui))
     query_to_targets = get_drug_diseases_to_check(concept_file, cui_to_idx)
     all_queries = query_to_targets.keys()
    
@@ -370,9 +370,9 @@ def analyze_semantic_files(filenames, num_of_nn, concept_file, num_of_cores):
     for filename in filenames:
         query_target_rank = get_all_target_neighbors(query_to_targets, filename_to_embedding_matrices[filename], num_of_nn)
         num_of_hits = evaluate_result(query_target_rank, num_of_nn)
-        print '%s &  %.2f,' %(filename.split('/')[-1],
+        print('%s &  %.2f,' %(filename.split('/')[-1],
                 num_of_hits*100/num_of_queries),
-        f.write('%s,%.4f,%d,' %(filename.split('/')[-1], num_of_hits*100/num_of_queries, num_of_hits))
+        f.write('%s,%.4f,%d,' %(filename.split('/')[-1], num_of_hits*100/num_of_queries, num_of_hits)))
         
         ref_seed_list = []
         for ref_idx in all_queries:
@@ -416,8 +416,8 @@ def analyze_semantic_files(filenames, num_of_nn, concept_file, num_of_cores):
         ref_name = cui_to_description[ref_cui]
         seed_cui = idx_to_cui[hit_max[1]]
         seed_name = cui_to_description[seed_cui]
-        print '& %.2f & %.2f  \\\\' %(hit_sum/counter*100/num_of_queries,
-                                          hit_max[2]*100/num_of_queries)
+        print('& %.2f & %.2f  \\\\' %(hit_sum/counter*100/num_of_queries,
+                                          hit_max[2]*100/num_of_queries))
         f.write('%.4f,%.4f,%s,%s,%.4f,%d\n' %(hit_sum/counter*100/num_of_queries,
                                               hit_sum/counter,
                                               ref_name, seed_name,
@@ -482,36 +482,36 @@ def get_fine_grain_drug(idx_to_cui, embedding_matrix, drug_pairs, search_indices
         target = ranks[counter, 1:num_of_neighbor+1]
         num_of_possible_hits = min(len(drug_pairs[query_idx]), num_of_neighbor)
         if display:
-            print ""
-            print cui_to_description[idx_to_cui[query_idx]] + ' (' + str(num_of_possible_hits) + '): ',
+            print("")
+            print(cui_to_description[idx_to_cui[query_idx]] + ' (' + str(num_of_possible_hits) + '): ',)
             for disease_cui in query_to_targets_cui[idx_to_cui[query_idx]]:
-                print disease_cui, 
+                print(disease_cui, )
                 if disease_cui in cui_to_description:
-                    print '(' + cui_to_description[disease_cui] + '),',
+                    print('(' + cui_to_description[disease_cui] + '),',)
 
-            print ''
-            print '-------------------------------------------'
+            print('')
+            print('-------------------------------------------')
         dcg = 0
         best_dcg = np.sum(np.reciprocal(np.log2(range(2, num_of_possible_hits+2))))
         for i in xrange(num_of_neighbor):
             if search_indices[target[i]] in drug_pairs[query_idx]:
                 dcg += np.reciprocal(np.log2(i+2))
                 if display:
-                    print 'hit: ',
+                    print('hit: ',)
             else:
                 if display:
-                    print '     ',
+                    print('     ',)
             if display:
-                print cui_to_description[idx_to_cui[search_indices[target[i]]]] + ': ', 
+                print(cui_to_description[idx_to_cui[search_indices[target[i]]]] + ': ', )
                 if idx_to_cui[search_indices[target[i]]] in query_to_targets_cui:
                     for disease_cui in query_to_targets_cui[idx_to_cui[search_indices[target[i]]]]:
-                        print disease_cui,
+                        print(disease_cui,)
                         if disease_cui in cui_to_description:
-                            print '(' + cui_to_description[disease_cui] + '),',
-                print ''
+                            print('(' + cui_to_description[disease_cui] + '),',)
+                print('')
         cumulative_ndcgs.append(dcg/best_dcg)
         if display:
-            print dcg/best_dcg
+            print(dcg/best_dcg)
     #print ''    
     #print np.mean(np.array(cumulative_ndcgs))
     #print np.median(np.array(cumulative_ndcgs))
@@ -527,9 +527,9 @@ def analyze_fine_grain_concept_similarity_files(filenames, concept_filename, num
     for drug in drug_pairs.keys():
         drug_to_check.add(idx_to_cui[drug])
     
-    print drug_to_check.difference(set(query_to_targets_cui))
-    print len(query_to_targets_cui)
-    print len(drug_pairs)
+    print(drug_to_check.difference(set(query_to_targets_cui)))
+    print(len(query_to_targets_cui))
+    print(len(drug_pairs))
 
     type_to_idx, idx_to_type = organize_cui_by_type(cui_to_idx)
     cui_to_description = get_CUI_to_description()
@@ -544,7 +544,7 @@ def analyze_fine_grain_concept_similarity_files(filenames, concept_filename, num
     search_indices = np.array(drug_pairs.keys())
     for filename in filenames:
         cumulative_ndcgs, mean_ndcgs = get_fine_grain_drug(idx_to_cui, filename_to_embedding_matrices[filename], drug_pairs, search_indices, query_to_targets_cui, num_of_nn)
-        print filename + ' & ' + str(mean_ndcgs) + '  \\\\ '
+        print(filename + ' & ' + str(mean_ndcgs) + '  \\\\ ')
 
 
 def analyze_concept_similarity_files(filenames, num_of_nn):
@@ -552,7 +552,7 @@ def analyze_concept_similarity_files(filenames, num_of_nn):
 
     fname = 'analysis_concept_similarity'
     f = open(fname, 'w')
-    print f
+    print(f)
 
     for filename in filenames:
         f.write('%s\n' %(fname))
@@ -565,9 +565,9 @@ def analyze_concept_similarity_files(filenames, num_of_nn):
 # compute neighbor score for UMLS
 def analyze_concept_similarity(filename1, filename2, num_of_nn):
     embedding_matrix_1, embedding_matrix_2, idx_to_cui, cui_to_idx = generate_overlapping_sets(filename1, filename2)
-    print 'result for de Vine'
+    print('result for de Vine')
     type_idx_dcg_err_1 = get_nn_analysis(cui_to_idx, embedding_matrix_1, num_of_nn)
-    print '\nresult for Stanford'
+    print('\nresult for Stanford')
     type_idx_dcg_err_2 = get_nn_analysis(cui_to_idx, embedding_matrix_2, num_of_nn)
 
 
@@ -593,30 +593,30 @@ def analyze_concept_relatedness(filenames):
                                       cui_to_description[cui2], 
                                       similarity_score))
     for val in sorted(caviedes_to_print, key=lambda ele: ele[2]):
-        print val
+        print(val)
 
     for filename in filenames:
         embedding_matrix = filename_to_embedding_matrices[filename]
         Y = cdist(embedding_matrix, embedding_matrix, 'cosine')
-        print filename
+        print(filename)
         Y_scaled = Y/Y.max()
         current = []
         current_to_print = []
         for cui1, cui2, similarity_score in pairs_to_evaluate:
             if cui1 in cui_to_idx and cui2 in cui_to_idx:
-                print cui1, cui2
+                print(cui1, cui2)
                 current.append(Y_scaled[cui_to_idx[cui1], cui_to_idx[cui2]]) 
                 current_to_print.append((cui_to_description[cui1],
                                          cui_to_description[cui2],
                                          Y_scaled[cui_to_idx[cui1], cui_to_idx[cui2]]))
             else:
-                print 'not a hit: ', cui1, cui2
+                print('not a hit: ', cui1, cui2)
         caviedes = np.array(caviedes)
         current = np.array(current)
-        print pearsonr(caviedes, current)
-        print spearmanr(caviedes, current)
+        print(pearsonr(caviedes, current))
+        print(spearmanr(caviedes, current))
         for val in sorted(current_to_print, key=lambda ele: ele[2]):
-            print val
+            print(val)
 
 
 

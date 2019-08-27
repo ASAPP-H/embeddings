@@ -57,7 +57,7 @@ for ingredient in ingredient_to_all_ndcs.keys():
         embedding = np.mean(embeddings, axis=0)
         ndc_embeddings.append((ingredient, embedding))
     else:
-        print 'not found'
+        print('not found')
 
 outfilename = '../claims_cuis_hs_300.txt'
 with open(outfilename, 'w') as outfile:

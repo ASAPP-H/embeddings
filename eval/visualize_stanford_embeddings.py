@@ -48,7 +48,7 @@ for line in lines:
 f = open(ie,'r')
 lines = f.readlines()
 embedding_matrix = np.zeros(shape=(len(lines)-2,len(lines[2].split(" "))-2))
-print embedding_matrix.shape
+print(embedding_matrix.shape)
 idx_to_string_map = {}
 string_to_idx_map = {}
 for i in xrange(2,len(lines)):
@@ -96,7 +96,7 @@ if __name__ == "__main__":
             if analysis_type == 'examples':
                 counter = 0
                 for idx in idx_to_string_map:
-                    print idx_to_string_map[idx] , "(" + concept_to_string_map[idx_to_string_map[idx]] + ")"
+                    print(idx_to_string_map[idx] , "(" + concept_to_string_map[idx_to_string_map[idx]] + ")")
                     counter += 1
                     if counter > 50:
                         break
@@ -104,15 +104,15 @@ if __name__ == "__main__":
                 inp = concepts[0]
                 for key in string_to_idx_map:
                     if inp in concept_to_string_map[key]:
-                        print key + " : " + concept_to_string_map[key]
+                        print(key + " : " + concept_to_string_map[key])
             if analysis_type == 'neighbors':
                 inp = concepts[0]
-                print "\nAnalysis of neighbors for " + inp,
+                print("\nAnalysis of neighbors for " + inp,)
                 concept_string = concept_to_string_map[inp]
-                print " (" + concept_string + ")",
-                print " : Word position at " + str(string_to_idx_map[inp])
-                print "Top 50" + " cosine distance codes: "
-                print "-------------------------------------------------------"
+                print(" (" + concept_string + ")",)
+                print(" : Word position at " + str(string_to_idx_map[inp]))
+                print("Top 50" + " cosine distance codes: ")
+                print("-------------------------------------------------------")
                 pool = Pool(threads)
                 idx = string_to_idx_map[inp]
                 distances = pool.map(compute_cosine_distance,[[i,idx] for i in xrange(0,len(lines)-2)])
@@ -120,16 +120,16 @@ if __name__ == "__main__":
                 idx_to_close_points.reverse()
                 for top_idx in idx_to_close_points:
                     concept = idx_to_string_map[top_idx]
-                    print concept + " (" + concept_to_string_map[concept] + ", " + concept_to_CUI_map[concept] + "), ",
-                    #print str(CUI_to_type_map[concept_to_CUI_map[concept]]) + ") : " + str(distances[top_idx])
-                    print str(distances[top_idx])
+                    print(concept + " (" + concept_to_string_map[concept] + ", " + concept_to_CUI_map[concept] + "), ",)
+                    #print(str(CUI_to_type_map[concept_to_CUI_map[concept]]) + ") : " + str(distances[top_idx]))
+                    print(str(distances[top_idx]))
             elif analysis_type == 'combine':
                 inp1 = concepts[0]
                 inp2 = concepts[1]
-                print "\nAnalysis of combination of concepts : " + inp1 + " (" + concept_to_string_map[inp1] + ") and " + inp2,
-                print "(" + concept_to_string_map[inp2] + ")"
-                print "Top 50" + " cosine distance codes: "
-		print "-------------------------------------------------------"
+                print("\nAnalysis of combination of concepts : " + inp1 + " (" + concept_to_string_map[inp1] + ") and " + inp2,)
+                print("(" + concept_to_string_map[inp2] + ")")
+                print("Top 50" + " cosine distance codes: ")
+		print("-------------------------------------------------------")
                 pool = Pool(threads)
                 vector = (embedding_matrix[string_to_idx_map[inp1],:] + embedding_matrix[string_to_idx_map[inp2],:])/2
                 distances = pool.map(compute_cosine_distance_with_vector,[[i,vector] for i in xrange(0,len(lines)-2)])
@@ -137,16 +137,16 @@ if __name__ == "__main__":
                 idx_to_close_points.reverse()
                 for top_idx in idx_to_close_points:
                     concept = idx_to_string_map[top_idx]
-                    print concept + " (" + concept_to_string_map[concept] + ") : " + str(distances[top_idx])
+                    print(concept + " (" + concept_to_string_map[concept] + ") : " + str(distances[top_idx]))
             elif analysis_type == 'analogy':
                 inp1 = concepts[0]
                 inp2 = concepts[1]
                 inp3 = concepts[2]
-                print "\nAnalysis of analogy of concepts ... \n" + inp1,
-                print " (" + concept_to_string_map[inp1] + ") : " + inp2,
-                print "(" + concept_to_string_map[inp2] + ") = " +inp3 + " (" + concept_to_string_map[inp3] + ") : ?"
-                print "Top 50" + " cosine distance codes: "
-                print "-------------------------------------------------------"
+                print("\nAnalysis of analogy of concepts ... \n" + inp1,)
+                print(" (" + concept_to_string_map[inp1] + ") : " + inp2,)
+                print("(" + concept_to_string_map[inp2] + ") = " +inp3 + " (" + concept_to_string_map[inp3] + ") : ?")
+                print("Top 50" + " cosine distance codes: ")
+                print("-------------------------------------------------------")
                 pool = Pool(threads)
                 vector = embedding_matrix[string_to_idx_map[inp2],:] - embedding_matrix[string_to_idx_map[inp1],:]
                 vector = vector + embedding_matrix[string_to_idx_map[inp3],:]
@@ -155,6 +155,6 @@ if __name__ == "__main__":
                 idx_to_close_points.reverse()
                 for top_idx in idx_to_close_points:
                     concept = idx_to_string_map[top_idx]
-                    print concept + " (" + concept_to_string_map[concept] + ") : " + str(distances[top_idx])
+                    print(concept + " (" + concept_to_string_map[concept] + ") : " + str(distances[top_idx]))
         except:
-            print "Improper input."
+            print("Improper input.")

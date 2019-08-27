@@ -54,7 +54,7 @@ for line in lines:
     tokens = line.split("#")
     codes = tokens[0].split(" ")
     translation = ' '.join(tokens[1].split(" ")[1:-1])
-    print translation
+    print(translation)
     for code in codes:
         code = 'C_' + code
         code_to_translation_map[code] = translation.title()
@@ -64,7 +64,7 @@ for line in lines:
 f = open(ie,'r')
 lines = f.readlines() 
 embedding_matrix = np.zeros(shape=(len(lines)-2,len(lines[2].split(" "))-2))
-print embedding_matrix.shape 
+print(embedding_matrix.shape )
 idx_to_code_map = {}
 code_to_idx_map = {}
 for i in xrange(2,len(lines)):
@@ -106,23 +106,23 @@ if __name__ == "__main__":
             if analysis_type == 'examples':
                 counter = 0
                 for idx in idx_to_code_map:
-                    print idx_to_code_map[idx] , "(" + code_to_translation(idx_to_code_map[idx]) + ")"
+                    print(idx_to_code_map[idx] , "(" + code_to_translation(idx_to_code_map[idx]) + ")")
                     counter += 1
                     if counter > 50:
                         break
             if analysis_type == 'search':
                 word = codes[0]
-                print word
+                print(word)
                 for key in code_to_idx_map:
                     if word in code_to_translation(key):
-                        print key + " : " + code_to_translation(key)
+                        print(key + " : " + code_to_translation(key))
             if analysis_type == 'neighbors':
                 code = codes[0]
-                print "\nAnalysis of neighbors for " + code,
-                print " (" + code_to_translation(code) + ")",
-                print " : Word position at " + str(code_to_idx_map[code])
-                print "Top 50" + " cosine distance codes: "
-                print "-------------------------------------------------------"
+                print("\nAnalysis of neighbors for " + code,)
+                print(" (" + code_to_translation(code) + ")",)
+                print(" : Word position at " + str(code_to_idx_map[code]))
+                print("Top 50" + " cosine distance codes: ")
+                print("-------------------------------------------------------")
                 pool = Pool(threads)
                 idx = code_to_idx_map[code]
                 distances = pool.map(compute_cosine_distance,[[i,idx] for i in xrange(0,len(lines)-2)])
@@ -130,14 +130,14 @@ if __name__ == "__main__":
                 idx_to_close_points.reverse()
                 for top_idx in idx_to_close_points:
                     code = idx_to_code_map[top_idx]
-                    print code + " (" + code_to_translation(code) + ") : " + str(distances[top_idx])
+                    print(code + " (" + code_to_translation(code) + ") : " + str(distances[top_idx]))
             elif analysis_type == 'combine':
                 code1 = codes[0]
                 code2 = codes[1]
-                print "\nAnalysis of combination of concepts : " + code1 + " (" + code_to_translation(code1) + ") and " + code2,
-                print "(" + code_to_translation(code2) + ")"
-                print "Top 50" + " cosine distance codes: "
-                print "-------------------------------------------------------"
+                print("\nAnalysis of combination of concepts : " + code1 + " (" + code_to_translation(code1) + ") and " + code2,)
+                print("(" + code_to_translation(code2) + ")")
+                print("Top 50" + " cosine distance codes: ")
+                print("-------------------------------------------------------")
                 pool = Pool(threads)
                 vector = embedding_matrix[code_to_idx_map[code1],:] + embedding_matrix[code_to_idx_map[code2],:]
                 distances = pool.map(compute_cosine_distance_with_vector,[[i,vector] for i in xrange(0,len(lines)-2)])
@@ -145,25 +145,25 @@ if __name__ == "__main__":
                 idx_to_close_points.reverse()
                 for top_idx in idx_to_close_points:
                     code = idx_to_code_map[top_idx]
-                    print code + " (" + code_to_translation(code) + ") : " + str(distances[top_idx])
+                    print(code + " (" + code_to_translation(code) + ") : " + str(distances[top_idx]))
             elif analysis_type == 'analogy':
                 code1 = codes[0]
                 code2 = codes[1]
                 code3 = codes[2]
-                print "\nAnalysis of analogy of concepts ... \n" + code1,
-                print " (" + code_to_translation(code1) + ") : " + code2,
-                print "(" + code_to_translation(code2) + ") = " + code3 + " (" + code_to_translation(code3) + ") : ?"
-                print "Top 50" + " cosine distance codes: "
-                print "-------------------------------------------------------"
+                print("\nAnalysis of analogy of concepts ... \n" + code1,)
+                print(" (" + code_to_translation(code1) + ") : " + code2,)
+                print("(" + code_to_translation(code2) + ") = " + code3 + " (" + code_to_translation(code3) + ") : ?")
+                print("Top 50" + " cosine distance codes: ")
+                print("-------------------------------------------------------")
                 pool = Pool(threads)
                 vector = embedding_matrix[code_to_idx_map[code2],:] - embedding_matrix[code_to_idx_map[code1],:]
                 vector = vector + embedding_matrix[code_to_idx_map[code3],:]
                 distances = pool.map(compute_cosine_distance_with_vector,[[i,vector] for i in xrange(0,len(lines)-2)])
                 idx_to_close_points = [i[0] for i in sorted(enumerate(distances), key=lambda x:x[1])][-50:]
                 idx_to_close_points.reverse()
-                print idx_to_close_points
+                print(idx_to_close_points)
                 for top_idx in idx_to_close_points:
                     code = idx_to_code_map[top_idx]
-                    print code + " (" + code_to_translation(code) + ") : " + str(distances[top_idx])
+                    print(code + " (" + code_to_translation(code) + ") : " + str(distances[top_idx]))
         except:
-            print "IMPROPER INPUT!!!"
+            print("IMPROPER INPUT!!!")

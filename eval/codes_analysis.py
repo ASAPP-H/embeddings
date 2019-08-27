@@ -224,17 +224,17 @@ def get_icd9_to_description():
 # type == f: fine grain, c: coarse grain
 def get_css_analysis(filenames_type, num_of_neighbor, type='f'):
     filename_to_embedding_matrix, idx_to_icd9, icd9_to_idx = generate_overlapping_sets(filenames_type)
-    print len(icd9_to_idx.keys())
+    print(len(icd9_to_idx.keys()))
     if type == 'c':
         icd9_pairs = get_coarse_icd9_pairs(set(icd9_to_idx.keys()))
     else:
         icd9_pairs = get_icd9_pairs(set(icd9_to_idx.keys()))
 
-    print len(icd9_pairs)
+    print(len(icd9_pairs))
     icd9_to_check = set(icd9_pairs.keys())
     icd9_to_check.intersection_update(set(icd9_to_idx.keys()))
 
-    print len(icd9_to_check)
+    print(len(icd9_to_check))
 
     icd9_to_description = get_icd9_to_description()
     for icd9 in icd9_to_idx.keys():
