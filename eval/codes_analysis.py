@@ -126,7 +126,7 @@ def read_embedding_cui(filename):
             if cui[0] != 'C':
                 if cui in concept_to_cui:
                     cui = concept_to_cui[cui]
-            embedding_matrix[idx,:] = np.array(map(float, datum[1:]))
+            embedding_matrix[idx,:] = np.array(list(map(float, datum[1:])))
             # potential bug here
             if cui in cui_to_icd9:
                 idx_to_name[idx] = cui_to_icd9[cui]
@@ -157,7 +157,7 @@ def read_embedding_codes(filename):
             if embedding_type not in embedding_type_to_indices:
                 embedding_type_to_indices[embedding_type] = []
             embedding_type_to_indices[embedding_type].append(idx)
-            embedding_matrix[idx,:] = np.array(map(float, datum[1:]))
+            embedding_matrix[idx,:] = np.array(list(map(float, datum[1:])))
         return embedding_matrix, embedding_type_to_indices, name_to_idx, idx_to_name
 
 
@@ -210,7 +210,7 @@ def generate_overlapping_sets(filenames_type):
 
 def get_icd9_to_description():
     icd9_to_description = {}
-    with open('CMS32_DESC_LONG_DX.txt', 'r') as infile:
+    with open('CMS32_DESC_LONG_DX.txt', 'r', encoding='latin-1') as infile:
         data = infile.readlines()
         for row in data:
             icd9 = row.strip()[:6].strip()
